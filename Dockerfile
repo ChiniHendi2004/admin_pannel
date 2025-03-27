@@ -3,24 +3,9 @@ FROM php:8.1-apache
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    zip \
-    unzip \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libicu-dev \
+    zip unzip git curl libpng-dev libonig-dev libxml2-dev libzip-dev libicu-dev \
     && docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    intl \
-    opcache
+    pdo_mysql mbstring exif pcntl bcmath gd intl opcache
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -34,8 +19,10 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first and install dependencies
+# Copy Composer files first
 COPY composer.json composer.lock ./
+
+# Install Laravel dependencies
 RUN composer install --optimize-autoloader --no-dev
 
 # Copy the rest of the Laravel project files
