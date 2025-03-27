@@ -1,3 +1,25 @@
+# Ignore local development artifacts
 node_modules
 vendor
+
+# Ignore system files
+*.log
 .env
+*.env.local
+*.env.development
+*.env.testing
+*.env.production
+
+# Ignore IDE config files
+.idea
+.vscode
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Docker-related files
+docker-compose.yml
+Dockerfile
