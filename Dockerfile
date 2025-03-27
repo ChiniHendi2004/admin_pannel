@@ -28,18 +28,22 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
+# Set memory limit for Composer
+ENV COMPOSER_MEMORY_LIMIT=-1
+
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy Laravel files
+# Copy composer files first and install dependencies
+COPY composer.json composer.lock ./
+RUN composer install --optimize-autoloader --no-dev
+
+# Copy the rest of the Laravel project files
 COPY . .
 
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Install Laravel dependencies
-RUN composer install --optimize-autoloader --no-dev
 
 # Ensure the APP_KEY is set
 RUN if [ ! -f .env ]; then cp .env.example .env; fi && php artisan key:generate
